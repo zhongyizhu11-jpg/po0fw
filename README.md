@@ -3,6 +3,8 @@
 po0 防火墙自动加白 —— PC（Linux / macOS / Windows）、安卓 Termux、软路由（OpenWrt / Kwrt）通用版。
 
 > 灵感来自群友的 iOS 客户端脚本（Surge / Loon / Stash / QX / Shadowrocket / Egern），本项目把同样的加白逻辑带到桌面与路由器平台。
+>
+> 本仓库 fork 自 [w0ven/po0fw](https://github.com/w0ven/po0fw)，安装链接与模块均从本仓库拉取。
 
 ## 原理
 
@@ -24,14 +26,14 @@ Token 在 po0 控制台机器详情页「防火墙」卡片获取，形如 `pgnf
 | OpenWrt / Kwrt 软路由 | 本仓库 shell 脚本 | cron + hotplug WAN 重连秒级触发 |
 | Windows | 本仓库 PowerShell | 计划任务：30 秒 + 网络事件 |
 | 安卓 | [android/](android/)：MacroDroid / HTTP Shortcuts / Termux | 网络切换 + 定时 |
-| iOS/Mac 代理客户端 | 本仓库脚本模块：Surge / Loon / Stash / QX / Shadowrocket / Egern（[一键安装页](https://po0fw.uuuz.de/)） | network-changed 即时 + 30 秒 cron（Stash / QX / Shadowrocket 为 1 分钟） |
+| iOS/Mac 代理客户端 | 本仓库脚本模块：Surge / Loon / Stash / QX / Shadowrocket / Egern（[一键安装页](https://zhongyizhu11-jpg.github.io/po0fw/)） | network-changed 即时 + 30 秒 cron（Stash / QX / Shadowrocket 为 1 分钟） |
 | iOS 无代理 App | [ios/](ios/)：快捷指令自动化 | Wi-Fi 切换触发 |
 
 ## iOS / Mac 代理客户端模块
 
 Surge / Loon / Stash / Quantumult X / Shadowrocket / Egern 六客户端脚本模块（共享环境兼容层），带面板显示、蜂窝 📶 标记、network-changed 即时触发 + 每 30 秒 cron 兜底（Stash / Quantumult X / Shadowrocket 的 cron 暂不支持或未确认支持秒级，仍为每 1 分钟）：
 
-👉 **一键安装页：<https://po0fw.uuuz.de/>**
+👉 **一键安装页：<https://zhongyizhu11-jpg.github.io/po0fw/>**
 
 | 客户端 | 载体 | token 配置 |
 |---|---|---|
@@ -49,7 +51,7 @@ Surge / Loon / Stash / Quantumult X / Shadowrocket / Egern 六客户端脚本模
 ### Linux / macOS / 安卓 Termux
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/install-linux.sh | PO0FW_TOKENS="pgnfw_你的token" sh
+curl -sSL https://raw.githubusercontent.com/zhongyizhu11-jpg/po0fw/main/install-linux.sh | PO0FW_TOKENS="pgnfw_你的token" sh
 ```
 
 - Linux(root)：装为 systemd timer（`po0fw.timer`，每 30 秒）
@@ -59,7 +61,7 @@ curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/install-linux.sh | 
 ### OpenWrt / Kwrt 软路由
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/openwrt/install-openwrt.sh -o /tmp/i.sh
+curl -sSL https://raw.githubusercontent.com/zhongyizhu11-jpg/po0fw/main/openwrt/install-openwrt.sh -o /tmp/i.sh
 PO0FW_TOKENS="pgnfw_你的token" sh /tmp/i.sh
 ```
 
@@ -70,7 +72,7 @@ PO0FW_TOKENS="pgnfw_你的token" sh /tmp/i.sh
 管理员 PowerShell：
 
 ```powershell
-irm https://raw.githubusercontent.com/w0ven/po0fw/main/windows/install-windows.ps1 -OutFile i.ps1
+irm https://raw.githubusercontent.com/zhongyizhu11-jpg/po0fw/main/windows/install-windows.ps1 -OutFile i.ps1
 powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "pgnfw_你的token"
 ```
 
