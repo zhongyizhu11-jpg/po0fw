@@ -79,7 +79,7 @@ Assert-PowerShellSyntax -Path $mainScript
 Write-Host "[2/3] Writing configuration"
 Set-Content -LiteralPath (Join-Path $dir "po0fw.conf") -Value $Tokens -Encoding UTF8
 
-Write-Host "[3/3] Registering the silent scheduled task (10 minutes + network change)"
+Write-Host "[3/3] Registering the silent scheduled task (1 minute + network change)"
 # Use splatting instead of PowerShell backtick continuations. A backtick stops
 # working when copied text gains trailing whitespace, which made -Argument run
 # as a separate command and left the scheduled-task Action null.
@@ -92,7 +92,7 @@ $action = New-ScheduledTaskAction @actionParameters
 $triggerParameters = @{
     Once = $true
     At = Get-Date
-    RepetitionInterval = New-TimeSpan -Minutes 10
+    RepetitionInterval = New-TimeSpan -Minutes 1
 }
 $timerTrigger = New-ScheduledTaskTrigger @triggerParameters
 

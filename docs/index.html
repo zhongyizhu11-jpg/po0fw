@@ -263,7 +263,7 @@ footer a{color:var(--ink2)}
       <div class="cb"><button class="cp">复制</button><pre>curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/openwrt/install-openwrt.sh -o /tmp/i.sh
 PO0FW_TOKENS="<span class="tk" data-t>pgnfw_你的token</span>" sh /tmp/i.sh</pre></div>
       <div class="stepline"><span class="no">2</span><h3>完成 —— 已自动配置双触发</h3></div>
-      <div class="stepbody">cron 每 10 分钟兜底 + WAN 拨号/重连事件<b>秒级</b>加白。跑一次 <code>po0fw</code> 验证，日志在 <code>/tmp/po0fw.log</code>。</div>
+      <div class="stepbody">cron 每 1 分钟兜底 + WAN 拨号/重连事件<b>秒级</b>加白。跑一次 <code>po0fw</code> 验证，日志在 <code>/tmp/po0fw.log</code>。</div>
       <div class="note"><b>为什么最推荐装这里：</b>只有路由器能第一时间感知家宽重拨；且全家设备连 Wi-Fi 都被它覆盖，手机电脑就不用再各装一份。家宽出口建议钉固定槽位：token 写成 <code>pgnfw_xxx@0</code>（详见 FAQ）。</div>
     </div>
 
@@ -271,11 +271,11 @@ PO0FW_TOKENS="<span class="tk" data-t>pgnfw_你的token</span>" sh /tmp/i.sh</pr
     <div class="pane" id="pane-pc">
       <div class="stepline"><span class="no">1</span><h3>Linux / macOS —— 一条命令</h3></div>
       <div class="cb"><button class="cp">复制</button><pre>curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/install-linux.sh | PO0FW_TOKENS="<span class="tk" data-t>pgnfw_你的token</span>" sh</pre></div>
-      <div class="stepbody">root 自动注册 systemd timer；macOS / 非 root 写入 crontab，均为每 10 分钟。</div>
+      <div class="stepbody">root 自动注册 systemd timer；macOS / 非 root 写入 crontab，均为每 1 分钟。</div>
       <div class="stepline"><span class="no">2</span><h3>Windows —— 管理员 PowerShell</h3></div>
       <div class="cb"><button class="cp">复制</button><pre>irm https://raw.githubusercontent.com/w0ven/po0fw/main/windows/install-windows.ps1 -OutFile i.ps1
 powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "<span class="tk" data-t>pgnfw_你的token</span>"</pre></div>
-      <div class="stepbody">注册计划任务：每 10 分钟 + 网络连接事件双触发。</div>
+      <div class="stepbody">注册计划任务：每 1 分钟 + 网络连接事件双触发。</div>
       <div class="note"><b>常用命令：</b><code>po0fw</code> 立即加白 · <code>po0fw status</code> 查看白名单 · 改 token 编辑 <code>/etc/po0fw.conf</code>（Windows 为 <code>%ProgramData%\po0fw\po0fw.conf</code>）。</div>
       <p class="community-option"><b>社群客户端：</b>热心网友还提供了内置加白的 <a href="https://wiki.uuuz.de/guide/clients/po0-clash">po0-clash（Windows / macOS）</a>。可以查看使用教程，或到下方<a href="#community">社群共建</a>了解项目。现有客户端也可继续使用上面的独立脚本。</p>
     </div>
@@ -296,7 +296,7 @@ powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "<span class="tk" data-t>
     <!-- iOS -->
     <div class="pane" id="pane-ios">
       <div class="stepline"><span class="no">1</span><h3>选择你的客户端，一键安装模块</h3></div>
-      <div class="stepbody" style="margin-bottom:16px">模块带面板显示、蜂窝 📶 标记、切网即时触发 + 每 10 分钟 cron。上方填过 token 的话，安装链接已自动带上参数。</div>
+      <div class="stepbody" style="margin-bottom:16px">模块带面板显示、蜂窝 📶 标记、切网即时触发 + 每 1 分钟 cron。上方填过 token 的话，安装链接已自动带上参数。</div>
       <div class="cards">
         <div class="card">
           <div class="hd"><img src="icons/surge.png" alt="Surge"><div><div class="nm">Surge</div><div class="ct">iOS / Mac · sgmodule</div></div></div>
@@ -341,7 +341,7 @@ powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "<span class="tk" data-t>
   <div class="wrap">
     <div class="eyebrow">What you get</div>
     <h2>装完之后</h2>
-    <p class="desc">无需任何操作：切网即时、每 10 分钟自动检查，出口变了才真正写入。支持面板的客户端（Surge / Stash / Egern）长这样：</p>
+    <p class="desc">无需任何操作：切网即时、每 1 分钟自动检查，出口变了才真正写入。支持面板的客户端（Surge / Stash / Egern）长这样：</p>
     <div class="preview">
       <div class="terminal">
         <div class="bar"><i></i><i></i><i></i></div>
