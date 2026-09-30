@@ -26,10 +26,12 @@ PO0FW_TOKENS="$TOKENS"
 EOF
 chmod 600 /etc/po0fw.conf
 
-echo "[3/4] cron 每 1 分钟兜底"
+echo "[3/4] cron 每 30 秒兜底"
 touch /etc/crontabs/root
 sed -i '\#/usr/bin/po0fw#d' /etc/crontabs/root
+# cron 最小粒度 1 分钟：两条任务错开 30 秒 = 每 30 秒一次
 echo "* * * * * /usr/bin/po0fw >/tmp/po0fw.log 2>&1" >> /etc/crontabs/root
+echo "* * * * * sleep 30; /usr/bin/po0fw >/tmp/po0fw.log 2>&1" >> /etc/crontabs/root
 /etc/init.d/cron enable >/dev/null 2>&1 || true
 /etc/init.d/cron restart >/dev/null 2>&1 || /etc/init.d/cron start
 

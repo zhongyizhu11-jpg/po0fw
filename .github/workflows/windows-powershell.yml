@@ -61,8 +61,8 @@ jobs:
               if ($task.Actions[0].Arguments -notmatch 'po0fw-hidden\.vbs') {
                   throw "Scheduled task action is missing po0fw-hidden.vbs"
               }
-              if ($task.Triggers.Count -ne 2) {
-                  throw "Expected timer and network triggers, got $($task.Triggers.Count)"
+              if ($task.Triggers.Count -ne 3) {
+                  throw "Expected two 30-second-offset timer triggers and a network trigger, got $($task.Triggers.Count)"
               }
 
               $installed = Join-Path $env:ProgramData "po0fw\po0fw.ps1"

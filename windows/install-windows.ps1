@@ -79,7 +79,7 @@ Assert-PowerShellSyntax -Path $mainScript
 Write-Host "[2/3] Writing configuration"
 Set-Content -LiteralPath (Join-Path $dir "po0fw.conf") -Value $Tokens -Encoding UTF8
 
-Write-Host "[3/3] Registering the silent scheduled task (1 minute + network change)"
+Write-Host "[3/3] Registering the silent scheduled task (30 seconds + network change)"
 # Use splatting instead of PowerShell backtick continuations. A backtick stops
 # working when copied text gains trailing whitespace, which made -Argument run
 # as a separate command and left the scheduled-task Action null.
@@ -89,12 +89,21 @@ $actionParameters = @{
 }
 $action = New-ScheduledTaskAction @actionParameters
 
+# Task Scheduler cannot repeat more often than once a minute, so two
+# one-minute triggers offset by 30 seconds give a 30-second cadence.
+$startAt = Get-Date
 $triggerParameters = @{
     Once = $true
-    At = Get-Date
+    At = $startAt
     RepetitionInterval = New-TimeSpan -Minutes 1
 }
 $timerTrigger = New-ScheduledTaskTrigger @triggerParameters
+$offsetTriggerParameters = @{
+    Once = $true
+    At = $startAt.AddSeconds(30)
+    RepetitionInterval = New-TimeSpan -Minutes 1
+}
+$offsetTimerTrigger = New-ScheduledTaskTrigger @offsetTriggerParameters
 
 $eventClass = Get-CimClass -ClassName MSFT_TaskEventTrigger -Namespace Root/Microsoft/Windows/TaskScheduler
 $networkTrigger = New-CimInstance -CimClass $eventClass -ClientOnly
@@ -113,7 +122,7 @@ $settings = New-ScheduledTaskSettingsSet @settingsParameters
 $registrationParameters = @{
     TaskName = "po0fw"
     Action = $action
-    Trigger = @($timerTrigger, $networkTrigger)
+    Trigger = @($timerTrigger, $offsetTimerTrigger, $networkTrigger)
     Settings = $settings
     RunLevel = "Limited"
     Force = $true

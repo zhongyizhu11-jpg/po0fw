@@ -6,7 +6,7 @@ po0 防火墙自动加白 —— PC（Linux / macOS / Windows）、安卓 Termux
 
 ## 原理
 
-- 每 1 分钟（+ 网络切换事件）向 po0 官方 **IP 直连端点**发起加白：
+- 每 30 秒（+ 网络切换事件）向 po0 官方 **IP 直连端点**发起加白：
   `POST https://124.221.69.228/api/firewall/<token>/add`
 - 服务端按请求来源 IP 自动识别 `/24` 网段并**幂等**加白（已在白名单则不占新坑、不推进 FIFO 淘汰）
 - 客户端无需自行探测出口 IP，也**无需配置任何代理分流规则**（IP 直连不经 DNS/域名分流）
@@ -20,16 +20,16 @@ Token 在 po0 控制台机器详情页「防火墙」卡片获取，形如 `pgnf
 
 | 平台 | 方案 | 触发方式 |
 |---|---|---|
-| Linux / macOS | 本仓库 shell 脚本 | systemd timer / cron 每 1 分钟 |
+| Linux / macOS | 本仓库 shell 脚本 | systemd timer / cron 每 30 秒 |
 | OpenWrt / Kwrt 软路由 | 本仓库 shell 脚本 | cron + hotplug WAN 重连秒级触发 |
-| Windows | 本仓库 PowerShell | 计划任务：1 分钟 + 网络事件 |
+| Windows | 本仓库 PowerShell | 计划任务：30 秒 + 网络事件 |
 | 安卓 | [android/](android/)：MacroDroid / HTTP Shortcuts / Termux | 网络切换 + 定时 |
-| iOS/Mac 代理客户端 | 本仓库脚本模块：Surge / Loon / Stash / QX / Shadowrocket / Egern（[一键安装页](https://po0fw.uuuz.de/)） | network-changed 即时 + 1 分钟 cron |
+| iOS/Mac 代理客户端 | 本仓库脚本模块：Surge / Loon / Stash / QX / Shadowrocket / Egern（[一键安装页](https://po0fw.uuuz.de/)） | network-changed 即时 + 30 秒 cron（Stash / QX / Shadowrocket 为 1 分钟） |
 | iOS 无代理 App | [ios/](ios/)：快捷指令自动化 | Wi-Fi 切换触发 |
 
 ## iOS / Mac 代理客户端模块
 
-Surge / Loon / Stash / Quantumult X / Shadowrocket / Egern 六客户端脚本模块（共享环境兼容层），带面板显示、蜂窝 📶 标记、network-changed 即时触发 + 每 1 分钟 cron 兜底：
+Surge / Loon / Stash / Quantumult X / Shadowrocket / Egern 六客户端脚本模块（共享环境兼容层），带面板显示、蜂窝 📶 标记、network-changed 即时触发 + 每 30 秒 cron 兜底（Stash / Quantumult X / Shadowrocket 的 cron 暂不支持或未确认支持秒级，仍为每 1 分钟）：
 
 👉 **一键安装页：<https://po0fw.uuuz.de/>**
 
@@ -52,8 +52,8 @@ Surge / Loon / Stash / Quantumult X / Shadowrocket / Egern 六客户端脚本模
 curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/install-linux.sh | PO0FW_TOKENS="pgnfw_你的token" sh
 ```
 
-- Linux(root)：装为 systemd timer（`po0fw.timer`，每 1 分钟）
-- macOS / 非 root：写入 crontab
+- Linux(root)：装为 systemd timer（`po0fw.timer`，每 30 秒）
+- macOS / 非 root：写入 crontab（两条任务错开 30 秒）
 - Termux：自动装 cronie 并写 crontab（需 `sv-enable crond`）
 
 ### OpenWrt / Kwrt 软路由
@@ -63,7 +63,7 @@ curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/openwrt/install-ope
 PO0FW_TOKENS="pgnfw_你的token" sh /tmp/i.sh
 ```
 
-- cron 每 1 分钟兜底 + `hotplug.d/iface` WAN 变化即时触发（PPPoE 重拨秒级加白）
+- cron 每 30 秒兜底 + `hotplug.d/iface` WAN 变化即时触发（PPPoE 重拨秒级加白）
 
 ### Windows
 
@@ -74,7 +74,7 @@ irm https://raw.githubusercontent.com/w0ven/po0fw/main/windows/install-windows.p
 powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "pgnfw_你的token"
 ```
 
-- 注册计划任务：每 1 分钟 + 网络连接事件（EventID 10000）双触发
+- 注册计划任务：每 30 秒 + 网络连接事件（EventID 10000）双触发
 
 ## 用法
 
@@ -100,7 +100,7 @@ po0fw pgnfw_xxx,pgnfw_yyy@0    # 临时指定 token；@0 = 固定 0 号槽位
 
 **IPv6？** po0 防火墙按 IPv4 /24 加白，脚本强制 `-4`。
 
-**白名单满了？** 服务端按写入时间 FIFO 淘汰，被挤出的设备最迟 1 分钟自动补回。
+**白名单满了？** 服务端按写入时间 FIFO 淘汰，被挤出的设备最迟 30 秒自动补回（Stash / QX / Shadowrocket 最迟 1 分钟）。
 
 ## License
 

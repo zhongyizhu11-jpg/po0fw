@@ -214,7 +214,7 @@ footer a{color:var(--ink2)}
     <h2>它怎么工作</h2>
     <p class="desc">po0「鸡险」服务的防火墙白名单只放行最近来源 IP。po0fw 让每台设备自己维护白名单：</p>
     <div class="how">
-      <div><div class="t">触发</div><p>定时（10–15 分钟）与网络切换事件双通道，换 IP 后最迟一个周期内响应。</p></div>
+      <div><div class="t">触发</div><p>定时（30 秒–15 分钟）与网络切换事件双通道，换 IP 后最迟一个周期内响应。</p></div>
       <div><div class="t">上报</div><p>向官方 IP 端点发送一个 POST 请求，客户端无需自行探测出口 IP。</p></div>
       <div><div class="t">加白</div><p>服务端按请求来源识别 /24 网段，重复上报幂等处理，不占新坑位。</p></div>
       <div><div class="t">自愈</div><p>白名单上限 5 个，坑满按最早写入淘汰；被挤掉的设备下个周期自动补回。</p></div>
@@ -263,7 +263,7 @@ footer a{color:var(--ink2)}
       <div class="cb"><button class="cp">复制</button><pre>curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/openwrt/install-openwrt.sh -o /tmp/i.sh
 PO0FW_TOKENS="<span class="tk" data-t>pgnfw_你的token</span>" sh /tmp/i.sh</pre></div>
       <div class="stepline"><span class="no">2</span><h3>完成 —— 已自动配置双触发</h3></div>
-      <div class="stepbody">cron 每 1 分钟兜底 + WAN 拨号/重连事件<b>秒级</b>加白。跑一次 <code>po0fw</code> 验证，日志在 <code>/tmp/po0fw.log</code>。</div>
+      <div class="stepbody">cron 每 30 秒兜底 + WAN 拨号/重连事件<b>秒级</b>加白。跑一次 <code>po0fw</code> 验证，日志在 <code>/tmp/po0fw.log</code>。</div>
       <div class="note"><b>为什么最推荐装这里：</b>只有路由器能第一时间感知家宽重拨；且全家设备连 Wi-Fi 都被它覆盖，手机电脑就不用再各装一份。家宽出口建议钉固定槽位：token 写成 <code>pgnfw_xxx@0</code>（详见 FAQ）。</div>
     </div>
 
@@ -271,11 +271,11 @@ PO0FW_TOKENS="<span class="tk" data-t>pgnfw_你的token</span>" sh /tmp/i.sh</pr
     <div class="pane" id="pane-pc">
       <div class="stepline"><span class="no">1</span><h3>Linux / macOS —— 一条命令</h3></div>
       <div class="cb"><button class="cp">复制</button><pre>curl -sSL https://raw.githubusercontent.com/w0ven/po0fw/main/install-linux.sh | PO0FW_TOKENS="<span class="tk" data-t>pgnfw_你的token</span>" sh</pre></div>
-      <div class="stepbody">root 自动注册 systemd timer；macOS / 非 root 写入 crontab，均为每 1 分钟。</div>
+      <div class="stepbody">root 自动注册 systemd timer；macOS / 非 root 写入 crontab，均为每 30 秒。</div>
       <div class="stepline"><span class="no">2</span><h3>Windows —— 管理员 PowerShell</h3></div>
       <div class="cb"><button class="cp">复制</button><pre>irm https://raw.githubusercontent.com/w0ven/po0fw/main/windows/install-windows.ps1 -OutFile i.ps1
 powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "<span class="tk" data-t>pgnfw_你的token</span>"</pre></div>
-      <div class="stepbody">注册计划任务：每 1 分钟 + 网络连接事件双触发。</div>
+      <div class="stepbody">注册计划任务：每 30 秒 + 网络连接事件双触发。</div>
       <div class="note"><b>常用命令：</b><code>po0fw</code> 立即加白 · <code>po0fw status</code> 查看白名单 · 改 token 编辑 <code>/etc/po0fw.conf</code>（Windows 为 <code>%ProgramData%\po0fw\po0fw.conf</code>）。</div>
       <p class="community-option"><b>社群客户端：</b>热心网友还提供了内置加白的 <a href="https://wiki.uuuz.de/guide/clients/po0-clash">po0-clash（Windows / macOS）</a>。可以查看使用教程，或到下方<a href="#community">社群共建</a>了解项目。现有客户端也可继续使用上面的独立脚本。</p>
     </div>
@@ -296,7 +296,7 @@ powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "<span class="tk" data-t>
     <!-- iOS -->
     <div class="pane" id="pane-ios">
       <div class="stepline"><span class="no">1</span><h3>选择你的客户端，一键安装模块</h3></div>
-      <div class="stepbody" style="margin-bottom:16px">模块带面板显示、蜂窝 📶 标记、切网即时触发 + 每 1 分钟 cron。上方填过 token 的话，安装链接已自动带上参数。</div>
+      <div class="stepbody" style="margin-bottom:16px">模块带面板显示、蜂窝 📶 标记、切网即时触发 + 每 30 秒 cron（Stash / QX / Shadowrocket 为每 1 分钟）。上方填过 token 的话，安装链接已自动带上参数。</div>
       <div class="cards">
         <div class="card">
           <div class="hd"><img src="icons/surge.png" alt="Surge"><div><div class="nm">Surge</div><div class="ct">iOS / Mac · sgmodule</div></div></div>
@@ -341,7 +341,7 @@ powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "<span class="tk" data-t>
   <div class="wrap">
     <div class="eyebrow">What you get</div>
     <h2>装完之后</h2>
-    <p class="desc">无需任何操作：切网即时、每 1 分钟自动检查，出口变了才真正写入。支持面板的客户端（Surge / Stash / Egern）长这样：</p>
+    <p class="desc">无需任何操作：切网即时、每 30 秒自动检查，出口变了才真正写入。支持面板的客户端（Surge / Stash / Egern）长这样：</p>
     <div class="preview">
       <div class="terminal">
         <div class="bar"><i></i><i></i><i></i></div>
@@ -388,7 +388,7 @@ powershell -ExecutionPolicy Bypass -File i.ps1 -Tokens "<span class="tk" data-t>
     <div class="eyebrow">FAQ</div>
     <h2>常见问题</h2>
     <div class="faq" style="margin-top:26px">
-      <details><summary>Wi-Fi 连着没断、公网 IP 变了（家宽重拨），能发现吗？</summary><div class="bd">切网事件抓不到这种静默变更，靠<b>定时兜底</b>：各端 10–15 分钟周期照常上报。且家宽重拨大多在同一 /24 段内，本来就无需重新加白。真正的兜底主力是软路由 —— 它能感知 WAN 重拨事件秒级加白。</div></details>
+      <details><summary>Wi-Fi 连着没断、公网 IP 变了（家宽重拨），能发现吗？</summary><div class="bd">切网事件抓不到这种静默变更，靠<b>定时兜底</b>：各端 30 秒–15 分钟周期照常上报。且家宽重拨大多在同一 /24 段内，本来就无需重新加白。真正的兜底主力是软路由 —— 它能感知 WAN 重拨事件秒级加白。</div></details>
       <details><summary>多台 po0 机器怎么配？</summary><div class="bd">每台机器 token 不同，用<b>英文逗号</b>拼起来填一处即可（Shadowrocket / QX 用 <code>|</code>）：<code>pgnfw_机器A,pgnfw_机器B</code>。设备换 IP 后所有机器的白名单同时更新。</div></details>
       <details><summary>固定槽位 @N 是什么？什么时候用？</summary><div class="bd">默认坑满按写入时间先进先出淘汰。家宽出口这种全家依赖的网段被挤掉几分钟都难受 —— 在 token 后加 <code>@槽位号</code>（0–4，自己指定）钉死：<code>pgnfw_xxx@0</code>，永不参与淘汰。每个 IP 只占一个槽位，换槽位号前先去面板删旧记录；手机等流动设备别钉，靠自愈就够。推荐：家宽 @0，剩 4 坑留给流动设备。</div></details>
       <details><summary>走代理时会把代理节点 IP 加白吗？</summary><div class="bd">一般不会：请求直连官方 IP <code>124.221.69.228</code>，按域名分流的代理碰不到。iOS 模块已内置直连规则；TUN / 透明代理全局接管的场景加一条 <code>IP-CIDR,124.221.69.228/32,DIRECT,no-resolve</code>。软路由跑脚本时确认路由器自身流量不进代理链（如 OpenClash「绕过本机」）。</div></details>

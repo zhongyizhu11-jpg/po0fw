@@ -35,11 +35,14 @@ echo "[2/3] 写配置 -> $CONF"
 printf 'PO0FW_TOKENS="%s"\n' "$TOKENS" > "$CONF"
 chmod 600 "$CONF"
 
-echo "[3/3] 配置定时任务（每 1 分钟）"
+echo "[3/3] 配置定时任务（每 30 秒）"
 if [ "$TERMUX" = 1 ]; then
   # Termux: 需要 pkg install cronie termux-services 或直接用 crontab
   command -v crontab >/dev/null 2>&1 || pkg install -y cronie >/dev/null
-  ( crontab -l 2>/dev/null | grep -v po0fw; echo "* * * * * PO0FW_CONF=$CONF $BIN >/dev/null 2>&1" ) | crontab -
+  # cron 最小粒度 1 分钟：两条任务错开 30 秒 = 每 30 秒一次
+  ( crontab -l 2>/dev/null | grep -v po0fw
+    echo "* * * * * PO0FW_CONF=$CONF $BIN >/dev/null 2>&1"
+    echo "* * * * * sleep 30; PO0FW_CONF=$CONF $BIN >/dev/null 2>&1" ) | crontab -
   echo "提示: Termux 需运行 sv-enable crond 或保持 termux 后台运行"
 elif command -v systemctl >/dev/null 2>&1 && [ "$(id -u)" = "0" ]; then
   cat > /etc/systemd/system/po0fw.service <<EOF
@@ -52,18 +55,22 @@ ExecStart=$BIN
 EOF
   cat > /etc/systemd/system/po0fw.timer <<'EOF'
 [Unit]
-Description=po0fw every 10 min
+Description=po0fw every 30 s
 [Timer]
-OnBootSec=1min
-OnUnitActiveSec=1min
+OnBootSec=30s
+OnUnitActiveSec=30s
+# 默认 AccuracySec=1min 会把 30 秒间隔合并成约 1 分钟，这里收紧
+AccuracySec=1s
 [Install]
 WantedBy=timers.target
 EOF
   systemctl daemon-reload
   systemctl enable --now po0fw.timer
 else
-  # macOS / 无 systemd: crontab
-  ( crontab -l 2>/dev/null | grep -v po0fw; echo "* * * * * PO0FW_CONF=$CONF $BIN >/dev/null 2>&1" ) | crontab -
+  # macOS / 无 systemd: crontab（两条任务错开 30 秒 = 每 30 秒一次）
+  ( crontab -l 2>/dev/null | grep -v po0fw
+    echo "* * * * * PO0FW_CONF=$CONF $BIN >/dev/null 2>&1"
+    echo "* * * * * sleep 30; PO0FW_CONF=$CONF $BIN >/dev/null 2>&1" ) | crontab -
 fi
 
 echo "安装完成，立即执行一次:"
